@@ -1,3 +1,4 @@
 mst
 *.o
 *.swp
+input*

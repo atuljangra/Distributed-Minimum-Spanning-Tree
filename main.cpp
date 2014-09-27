@@ -5,6 +5,8 @@
 #include <thread>
 #include <vector>
 
+#include "Prims.h"
+
 using namespace std;
 
 // This variable will be extern-ed.
@@ -26,6 +28,9 @@ int main (void) {
     
     printGraph(graph);
 
+    Prims *p = new Prims(graph);
+    p -> findMst();
+    p -> printMst(); 
     return 0;
 }
 
