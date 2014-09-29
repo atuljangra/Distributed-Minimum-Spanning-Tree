@@ -3,8 +3,8 @@ CC=g++ -g
 CFLAGS=-c -Wall -std=c++11
 LDFLAGS=-pthread
 OBJECTS=$(SOURCES:.cpp=.o)
-#SOURCES= $(wildcard *.cpp) main.cpp
-SOURCES=Prims.cpp Kruskal.cpp main.cpp
+SOURCES= $(wildcard *.cpp) 
+#SOURCES=Prims.cpp Kruskal.cpp main.cpp
 
 EXECUTABLE=mst
 .PHONY: all

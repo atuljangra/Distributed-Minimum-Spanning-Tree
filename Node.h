@@ -4,6 +4,9 @@
 #include <thread>
 #include <vector>
 
-// This is a single node of the graph.
-//
+// This is a single node of the graph connected by an edge.
+class Node {
 
+
+};
+#endif
