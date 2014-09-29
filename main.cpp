@@ -6,6 +6,9 @@
 #include <vector>
 
 #include "Prims.h"
+#include "Node.h"
+#include "Edge.h"
+#include "Graph.h"
 
 using namespace std;
 
@@ -27,6 +30,11 @@ int main (void) {
     }
     
     printGraph(graph);
+    Graph *g1 = Graph::getInstance();
+    Graph *g2 = Graph::getInstance();
+
+    cout << g1 << endl;
+    cout << g2 << endl;
 
     Prims *p = new Prims(graph);
     p -> findMst();
@@ -44,3 +52,5 @@ void printGraph(vector<int> v) {
     cout << endl;
 
 }
+
+
