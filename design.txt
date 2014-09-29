@@ -1,0 +1,11 @@
+Each node would be managed by different thread.
+They will be communicating using a common data structure. Two nodes can
+communicate only if they are joined by an edge. Communcation would be sort of a
+message queuing system where two nodes would share the queue and a condition
+variable. The communication would be initiated with the help of wait() and
+notify().
+
+Main thread would be responsible to set everyting up: Setting the global
+structure, setting each thread's state to sleeping and then randomly invoking
+one of the threads.
+
