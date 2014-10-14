@@ -10,6 +10,9 @@
 struct listItem {
     Node *node;
     std::vector<Item> list;
+    listItem(Node * n) {
+		node = n;
+	}
 };
 
 class Graph {
@@ -30,5 +33,6 @@ class Graph {
        }
        void addNodes(int i, int j);
        Edge *getEdge(int i, int j);
+       void createGraph(int num, std::vector<int> graph);
 };
 
