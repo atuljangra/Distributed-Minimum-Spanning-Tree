@@ -8,6 +8,11 @@
 // TODO: Sematically this is not a good place.
 class Node;
 class Edge;
+
+struct NodeID {
+    int id;
+};
+
 struct Item {
     Node *_node;
     Edge *_edge;
@@ -18,11 +23,16 @@ class Graph;
 class Node {
     private:
         // pointer to the const global shared structure.
+        // Remove this.
         const Graph *_graph;
-        int _id;
         std::vector <Item> _neighbours;
     public:
-        Node(int id) { _id = id;}
+        NodeID _id;
+        Node(int id) {
+            NodeID nodeID;;
+            nodeID.id = id;
+            _id = nodeID;
+        }
         void setNeighbours(std::vector<Item>);
 
 };
