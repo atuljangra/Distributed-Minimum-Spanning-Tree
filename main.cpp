@@ -20,6 +20,13 @@ void printGraph(vector <int>);
 int main (void) {
     // We need to take the input here.
     cin >> number_of_nodes;
+    Graph g = Graph::getInstance();
+
+    // Create Nodes.
+    for (int i = 0; i < number_of_nodes; i++) {
+        
+
+    }
     vector <int> graph;
     graph.resize(number_of_nodes * number_of_nodes);
     
@@ -28,7 +35,7 @@ int main (void) {
         cin >> temp;
         graph[i] = temp;
     }
-    
+     
     printGraph(graph);
     Graph *g1 = Graph::getInstance();
     Graph *g2 = Graph::getInstance();

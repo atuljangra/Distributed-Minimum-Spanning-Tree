@@ -7,6 +7,11 @@
 // This is the main shared memory structure that will be used by different
 // threads for cummuincation.
 // This would be singleton class.
+struct listItem {
+    Node *node;
+    std::vector<Item> list;
+};
+
 class Graph {
     private:
        static Graph * _instance;
@@ -15,7 +20,7 @@ class Graph {
 
        // Adjacency listrepresenting graph.
        // Each node is given it's list only.
-       std::vector<std::vector<Item>> adj_list;
+       std::vector<listItem> adj_list;
        Graph() { };
     public:
        static Graph * getInstance() {
