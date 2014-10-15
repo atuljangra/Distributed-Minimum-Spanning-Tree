@@ -9,10 +9,11 @@
 // This would be singleton class.
 struct listItem {
     Node *node;
-    std::vector<Item> list;
+    std::vector<Item> edgeList;
     listItem(Node * n) {
 		node = n;
 	}
+    Edge * getEdgeForNode(Node *node);
 };
 
 class Graph {
@@ -23,16 +24,21 @@ class Graph {
 
        // Adjacency listrepresenting graph.
        // Each node is given it's list only.
-       std::vector<listItem> adj_list;
+       std::vector<listItem*> adj_list;
        Graph() { };
+       int _num;
     public:
        static Graph * getInstance() {
            if (_instance == 0)
                _instance = new Graph();
            return _instance;
        }
-       void addNodes(int i, int j);
-       Edge *getEdge(int i, int j);
+       
        void createGraph(int num, std::vector<int> graph);
+       void printGraph();
+       // Every node will know about their neighbours and connecting edges only.
+       void distributeGraph();
+       // This will create the runnable threads and mark everyone as asleep.
+       void runNodes();
 };
 

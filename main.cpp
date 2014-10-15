@@ -4,6 +4,7 @@
 
 #include <thread>
 #include <vector>
+#include <chrono>
 
 #include "Prims.h"
 #include "Node.h"
@@ -22,11 +23,6 @@ int main (void) {
     cin >> number_of_nodes;
     Graph *g = Graph::getInstance();
 
-    // Create Nodes.
-    for (int i = 0; i < number_of_nodes; i++) {
-        
-
-    }
     vector <int> graph;
     graph.resize(number_of_nodes * number_of_nodes);
     
@@ -37,15 +33,24 @@ int main (void) {
     }
      
     printGraph(graph);
-    Graph *g1 = Graph::getInstance();
-    Graph *g2 = Graph::getInstance();
 
-    cout << g1 << endl;
-    cout << g2 << endl;
-
-    Prims *p = new Prims(graph);
+    // Creating the graph.
+    g -> createGraph(number_of_nodes, graph);
+    g -> printGraph();
+    
+    // Distributing the graph.
+    g -> distributeGraph();
+    
+    // Run all the nodes.
+    g -> runNodes();
+ 
+    // Sleep for a while maybe?
+    chrono::milliseconds duration(2000);
+    this_thread::sleep_for(duration);
+    /*Prims *p = new Prims(graph);
     p -> findMst();
     p -> printMst(); 
+    */
     return 0;
 }
 

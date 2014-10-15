@@ -29,10 +29,11 @@ void Pipe::writeMsg(Message *msg) {
 /*
  * Edge methods.
  */
-Edge::Edge(Node *a, Node*b) {
+Edge::Edge(Node *a, Node*b, int w) {
     _a = a;
     _b = b;
 
+    _weight = w;
     // Initialize Queue.
     _pipe_a = new Pipe(_a -> _id);
     _pipe_b = new Pipe(_b -> _id);

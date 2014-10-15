@@ -37,14 +37,16 @@ class Edge {
         Node *_b;
         Pipe *_pipe_a;
         Pipe *_pipe_b;
+        int _weight;
     public:
-        Edge(Node *a, Node *b);
+        Edge(Node *a, Node *b, int w);
                
         Pipe * getPipeA() { return _pipe_a; }
         Pipe * getPipeB() { return _pipe_b; }
         void sendMessage(Pipe * pipe, Message *msg);
         std::condition_variable _cv;
         std::mutex _mu;
+        int getWeight() { return _weight; }
         ~Edge();
 };
 

@@ -16,16 +16,23 @@ struct NodeID {
 struct Item {
     Node *_node;
     Edge *_edge;
+    Item(Node *n, Edge *e) {
+        _node = n;
+        _edge = e;
+    }
 };
 
 class Graph;
 // This is a single node of the graph connected by an edge.
 class Node {
     private:
-        // pointer to the const global shared structure.
-        // Remove this.
-        const Graph *_graph;
         std::vector <Item> _neighbours;
+        
+        // This will be the main listerner that will handle the execution of
+        // thread.
+        void _threadListener();
+        void _printList(std::vector<Item>);
+        std::thread _thread;
     public:
         NodeID _id;
         Node(int id) {
@@ -33,8 +40,14 @@ class Node {
             nodeID.id = id;
             _id = nodeID;
         }
+        int getID() { return _id.id; }
         void setNeighbours(std::vector<Item>);
+        void printEdges();
+        // This will actually create the thread and mark the thread as asleep.
+        void start();
 
+        ~Node();
 };
 
+#include "Edge.h"
 #endif
