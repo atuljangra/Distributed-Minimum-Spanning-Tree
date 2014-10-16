@@ -4,9 +4,6 @@
 
 #include "Edge.h"
 #include "Node.h"
-// This is the main shared memory structure that will be used by different
-// threads for cummuincation.
-// This would be singleton class.
 struct listItem {
     Node *node;
     std::vector<Item> edgeList;
@@ -16,6 +13,9 @@ struct listItem {
     Edge * getEdgeForNode(Node *node);
 };
 
+// This is the main shared memory structure that will be used by different
+// threads for cummuincation.
+// This would be singleton class.
 class Graph {
     private:
        static Graph * _instance;

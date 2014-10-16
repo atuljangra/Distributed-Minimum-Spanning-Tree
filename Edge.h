@@ -28,6 +28,10 @@ class Pipe {
 };
 // Use notify and stuff to wake the sleeping thread.
 
+// States for the edges.
+#define REJECTED 0
+#define BRANCH 1
+#define BASIC 2
 
 // An edge is a message passing system. Messages can be passed only between two
 // nodes connected by an edge.

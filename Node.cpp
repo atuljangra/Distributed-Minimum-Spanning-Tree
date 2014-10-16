@@ -16,6 +16,8 @@ void Node::_threadListener() {
     // For now just print some information and exit.
     cout << getID() << " Hello! " << endl;
     _printList(_neighbours);
+
+    
 }
 
 void Node::_printList(vector<Item> v) {   
@@ -24,6 +26,11 @@ void Node::_printList(vector<Item> v) {
         cout << getID() << " -> " << item._node->getID() << ":" << item._node << "\t" 
             << item._edge->getWeight() << ":" << item._edge << endl;
     }
+}
+
+void Node::_wakeUp() {
+
+
 }
 
 void Node::printEdges() {

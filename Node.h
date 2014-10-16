@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 
-// Irem for the gloabl adjacency list.
+// Item for the gloabl adjacency list.
 // TODO: Sematically this is not a good place.
 class Node;
 class Edge;
@@ -23,6 +23,12 @@ struct Item {
 };
 
 class Graph;
+
+// States for nodes.
+#define SLEEPING 0
+#define FIND 1
+#define FOUND 2
+
 // This is a single node of the graph connected by an edge.
 class Node {
     private:
@@ -33,6 +39,8 @@ class Node {
         void _threadListener();
         void _printList(std::vector<Item>);
         std::thread _thread;
+        int _state;
+        void _wakeUp();
     public:
         NodeID _id;
         Node(int id) {
@@ -40,6 +48,7 @@ class Node {
             nodeID.id = id;
             _id = nodeID;
         }
+        int getState() { return _state;}
         int getID() { return _id.id; }
         void setNeighbours(std::vector<Item>);
         void printEdges();
