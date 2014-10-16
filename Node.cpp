@@ -14,8 +14,8 @@ void Node::start() {
 
 void Node::_threadListener() {
     // For now just print some information and exit.
-    cout << getID() << " Hello! " << endl;
-    _printList(_neighbours);
+    std::cout << getID() << " Hello! " << std::endl;
+    printEdges();
 
     
 }

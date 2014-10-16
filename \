@@ -43,7 +43,7 @@ int main (void) {
     
     // Run all the nodes.
     g -> runNodes();
-    delete g; 
+ 
     // Sleep for a while maybe?
     chrono::milliseconds duration(2000);
 //    this_thread::sleep_for(duration);

@@ -11,6 +11,11 @@ struct listItem {
 		node = n;
 	}
     Edge * getEdgeForNode(Node *node);
+    ~listItem() {
+        std::cout << "deleting node" <<std:: endl;
+        // Items for edgeList will be deleted automatically. 
+        delete node;
+    }
 };
 
 // This is the main shared memory structure that will be used by different
@@ -33,7 +38,19 @@ class Graph {
                _instance = new Graph();
            return _instance;
        }
+
+       ~Graph () {
+           std::cout << "Deleting graph " << std::endl;
+           for (std::vector<listItem *>::iterator it = adj_list.begin(); it != adj_list.end();
+                   it++) {
+               delete *it;
+
+
+           }
+           adj_list.clear();
+           adj_list.shrink_to_fit();
        
+       }
        void createGraph(int num, std::vector<int> graph);
        void printGraph();
        // Every node will know about their neighbours and connecting edges only.
