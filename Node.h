@@ -5,6 +5,9 @@
 #include <vector>
 #include <queue>
 #include <condition_variable>
+
+#include "Message.h"
+
 // Item for the gloabl adjacency list.
 // TODO: Sematically this is not a good place.
 class Node;
@@ -13,22 +16,6 @@ struct NodeID {
     int id;
 };
 
-class Message {
-    public:
-        Message(int, std::string);
-        int _code;
-        std::string _msg;
-        std::string getMessage();
-        ~Message();
-        Message(const Message &m) {
-                _code = m._code;
-                _msg = m._msg;
-        }
-        Message() {
-            _code = -1;
-            _msg = "NULL";
-        }
-};
 
 struct Item {
     Node *_node;
@@ -55,15 +42,16 @@ class Graph;
 class Node {
     private:
         std::vector <Item> _neighbours;
+        int _state;
+        mq _mq;
+        std::thread _thread;
         
         // This will be the main listerner that will handle the execution of
         // thread.
         void _threadListener();
         void _printList(std::vector<Item>);
-        std::thread _thread;
-        int _state;
         void _wakeUp();
-        mq _mq;
+        void _processMessage(Message m);
     public:
         void addMessage(Message *msg); 
         NodeID _id;

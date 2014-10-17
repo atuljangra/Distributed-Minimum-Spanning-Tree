@@ -4,6 +4,7 @@
 
 using namespace std;
 
+thread::id tid;
 void Node::setNeighbours(vector<Item> v) {
     _neighbours = v;
 }
@@ -28,14 +29,19 @@ void Node::_threadListener() {
         } else {
             cout << getID() << " Waiting " << endl;
             _mq._cv.wait(locker);
+            // Someone will notify us and then we will check the queue.
+            curMessage = _mq._queue.front();
+            _mq._queue.pop();
         }
     
+        // By this point we have a message and we need to process it.
+        _processMessage(curMessage);
     
-    thread::id id = this_thread::get_id();
-    cout << "Thread " << id << " up for node " << getID() << endl;
+    tid = this_thread::get_id();
+    cout << "Thread " << tid << " up for node " << getID() << endl;
     // When someonenotifies us, just print the edges.
     printEdges();
-    cout << "Ending .... thread " << id << " for node " << getID() << endl;
+    cout << "Ending .... thread " << tid << " for node " << getID() << endl;
     _state = FIND; 
     // add message to the neighbours too.
     for (vector<Item>::iterator it = _neighbours.begin(); it != _neighbours.end(); it++) {
@@ -43,10 +49,16 @@ void Node::_threadListener() {
         if (n -> getState() == SLEEPING) 
             n->addMessage(NULL);
         
+        }
     }
-    }
+
+    // TODO Add a deadth message.
 }
 
+void Node::_processMessage(Message m) {
+    // Decode the message.
+    // Call the appropriate handler.
+}
 
 void Node::addMessage(Message *msg) {
     unique_lock<mutex> lock(_mq._mutex);
