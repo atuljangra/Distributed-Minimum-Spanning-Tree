@@ -52,6 +52,7 @@ class Node {
         void _printList(std::vector<Item>);
         void _wakeUp();
         void _processMessage(Message m);
+        void _printAndPerculate();
     public:
         void addMessage(Message *msg); 
         NodeID _id;

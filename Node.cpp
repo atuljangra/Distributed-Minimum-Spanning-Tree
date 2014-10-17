@@ -33,9 +33,34 @@ void Node::_threadListener() {
             curMessage = _mq._queue.front();
             _mq._queue.pop();
         }
-    
+        locker.unlock() ;
+        cout << getID() << "starting procedure " << endl;
         // By this point we have a message and we need to process it.
         _processMessage(curMessage);
+        // TODO Add a death message.
+    }
+}
+
+
+void Node::_processMessage(Message m) {
+    // Decode the message.
+    // Call the appropriate handler.
+    
+    // WakeUP message;
+    if (m._code == WAKEUP) { 
+        cout << getID() << " received wake up call " << endl; 
+        _wakeUp();
+    }
+    else if (m._code == PRINT) { 
+        cout << getID() << " received print call " << endl;
+        _printAndPerculate();
+    }
+    else {
+        cout << " received invalid request " << endl;
+    }
+}
+
+void Node::_printAndPerculate() {
     
     tid = this_thread::get_id();
     cout << "Thread " << tid << " up for node " << getID() << endl;
@@ -46,18 +71,12 @@ void Node::_threadListener() {
     // add message to the neighbours too.
     for (vector<Item>::iterator it = _neighbours.begin(); it != _neighbours.end(); it++) {
         Node * n = (Item(*it))._node;
-        if (n -> getState() == SLEEPING) 
-            n->addMessage(NULL);
-        
+        if (n -> getState() == SLEEPING) { 
+            Message *m = new Message();
+            m -> createPrintRequest();
+            n->addMessage(m);
         }
     }
-
-    // TODO Add a deadth message.
-}
-
-void Node::_processMessage(Message m) {
-    // Decode the message.
-    // Call the appropriate handler.
 }
 
 void Node::addMessage(Message *msg) {
@@ -86,7 +105,11 @@ void Node::_printList(vector<Item> v) {
 }
 
 void Node::_wakeUp() {
-
+    Message *m = new Message();
+    m -> createPrintRequest();
+    cout << getID() << "executing wake up " << endl;
+    addMessage(m);
+ 
 
 }
 

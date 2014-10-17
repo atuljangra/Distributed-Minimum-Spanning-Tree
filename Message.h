@@ -3,6 +3,9 @@
 
 #include <string>
 
+#define PRINT -1
+#define WAKEUP 0
+
 class Message {
     public:
         Message(int, std::string);
@@ -18,6 +21,17 @@ class Message {
             _code = -1;
             _msg = "NULL";
         }
+        Message(int code) {
+            _code = code;
+            _msg = "NULL";
+        }
+
+        /*
+         * Message creaters.
+         * Modify already instantiated Message.
+        */
+         Message * createWakeUpMessage();
+         Message * createPrintRequest();
 };
 
 #endif
