@@ -15,6 +15,17 @@ class Message {
         ~Message();
 };
 
+// Need to change exactly how a message isw delivered. 
+// We cannot have a thread waiting for mutilple condition variables.
+// This will not be efficient.
+// Some solutions would be:
+// 1. Have a queue and condition variable  at each node and have the other
+// node's thread insert the message into the queue. But this would disturb the
+// semantic.
+// 2. Have a concept of edge delivery. Semantically edge is a network, and the
+// two processes does not manually do the addition of message to the queue. We
+// can create a new thread to transfer the message through the edge or we can
+// have one thread per edge with one condition variable that will do this job.
 class Pipe {
     private: 
         NodeID _id;
