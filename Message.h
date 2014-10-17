@@ -5,6 +5,7 @@
 
 #define PRINT -1
 #define WAKEUP 0
+#define CONNECT 1
 
 class Message {
     public:
@@ -32,6 +33,7 @@ class Message {
         */
          Message * createWakeUpMessage();
          Message * createPrintRequest();
+         Message * createConnectRequest(int level);
 };
 
 #endif

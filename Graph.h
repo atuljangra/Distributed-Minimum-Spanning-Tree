@@ -58,6 +58,7 @@ class Graph {
        void distributeGraph();
        // This will create the runnable threads and mark everyone as asleep.
        void runNodes();
+       // Wake on thread up.
        void wakeOneNodeUp();
 };
 

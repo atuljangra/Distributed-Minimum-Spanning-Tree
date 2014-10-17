@@ -37,6 +37,10 @@ class Pipe {
 #define BRANCH 1
 #define BASIC 2
 
+// Locking pattern:
+// Node lock -> Edge lock.
+// We should never take node lock, while taking a edge lock.
+
 // An edge is a message passing system. Messages can be passed only between two
 // nodes connected by an edge.
 class Edge {
@@ -46,16 +50,19 @@ class Edge {
         Pipe *_pipe_a;
         Pipe *_pipe_b;
         int _weight;
+        int _state;
+        std::mutex _mu;
     public:
         Edge(Node *a, Node *b, int w);
-               
         Pipe * getPipeA() { return _pipe_a; }
         Pipe * getPipeB() { return _pipe_b; }
         void sendMessage(Pipe * pipe, Message *msg);
-        std::condition_variable _cv;
-        std::mutex _mu;
         int getWeight() { return _weight; }
         ~Edge();
+
+
+        int getState();
+        void setState(int);
 };
 
 #endif

@@ -44,3 +44,15 @@ Edge::Edge(Node *a, Node*b, int w) {
 void Edge::sendMessage(Pipe *pipe, Message *msg) {
     pipe -> writeMsg(msg);
 }
+
+// TODO Do we need this to be thread safe.
+int Edge::getState() {
+    unique_lock<mutex> lock(_mu);
+    return _state;
+}
+
+void Edge::setState(int state) {
+    unique_lock<mutex> lock(_mu);
+    _state = state;
+
+}

@@ -24,6 +24,10 @@ struct Item {
         _node = n;
         _edge = e;
     }
+    Item(const Item &it) {
+        _node = it._node;
+        _edge = it._edge;
+    }
 };
 
 struct mq {
@@ -45,14 +49,17 @@ class Node {
         int _state;
         mq _mq;
         std::thread _thread;
-        
+        int _levelNumber;
+        int _findCount;
         // This will be the main listerner that will handle the execution of
         // thread.
         void _threadListener();
+        std::vector<Item>::iterator _minimumWeightNode();
         void _printList(std::vector<Item>);
         void _wakeUp();
         void _processMessage(Message m);
         void _printAndPerculate();
+        void _connect(int level);
     public:
         void addMessage(Message *msg); 
         NodeID _id;
@@ -68,7 +75,7 @@ class Node {
         void printEdges();
         // This will actually create the thread and mark the thread as asleep.
         void start();
-
+        int getLevelNumber() { return _levelNumber; }
         ~Node();
 };
 
