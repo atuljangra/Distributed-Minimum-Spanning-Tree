@@ -3,14 +3,31 @@
 
 #include <thread>
 #include <vector>
-
+#include <queue>
+#include <condition_variable>
 // Item for the gloabl adjacency list.
 // TODO: Sematically this is not a good place.
 class Node;
 class Edge;
-
 struct NodeID {
     int id;
+};
+
+class Message {
+    public:
+        Message(int, std::string);
+        int _code;
+        std::string _msg;
+        std::string getMessage();
+        ~Message();
+        Message(const Message &m) {
+                _code = m._code;
+                _msg = m._msg;
+        }
+        Message() {
+            _code = -1;
+            _msg = "NULL";
+        }
 };
 
 struct Item {
@@ -22,13 +39,18 @@ struct Item {
     }
 };
 
+struct mq {
+    std::queue<Message> _queue;
+    std::mutex _mutex;
+    std::condition_variable _cv;
+};
 class Graph;
 
 // States for nodes.
+#define DEAD -1
 #define SLEEPING 0
 #define FIND 1
 #define FOUND 2
-
 // This is a single node of the graph connected by an edge.
 class Node {
     private:
@@ -41,12 +63,15 @@ class Node {
         std::thread _thread;
         int _state;
         void _wakeUp();
+        mq _mq;
     public:
+        void addMessage(Message *msg); 
         NodeID _id;
         Node(int id) {
             NodeID nodeID;;
             nodeID.id = id;
             _id = nodeID;
+            _state = DEAD;
         }
         int getState() { return _state;}
         int getID() { return _id.id; }

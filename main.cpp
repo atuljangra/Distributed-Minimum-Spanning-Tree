@@ -43,6 +43,9 @@ int main (void) {
     
     // Run all the nodes.
     g -> runNodes();
+    
+    // Wake one node up.
+    g -> wakeOneNodeUp();
     delete g; 
     // Sleep for a while maybe?
     chrono::milliseconds duration(2000);

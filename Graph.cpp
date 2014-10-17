@@ -86,3 +86,7 @@ void Graph::runNodes() {
     }
         
 }
+
+void Graph::wakeOneNodeUp() {
+    nodeObjects[0]->addMessage(NULL);
+}

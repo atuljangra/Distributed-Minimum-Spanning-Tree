@@ -6,14 +6,7 @@
 #include <mutex>
 
 #include "Node.h"
-class Message {
-    public:
-        Message(int, std::string);
-        int _code;
-        std::string _msg;
-        std::string getMessage();
-        ~Message();
-};
+
 
 // Need to change exactly how a message isw delivered. 
 // We cannot have a thread waiting for mutilple condition variables.

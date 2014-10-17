@@ -12,7 +12,7 @@ struct listItem {
 	}
     Edge * getEdgeForNode(Node *node);
     ~listItem() {
-        std::cout << "deleting node" <<std:: endl;
+        std::cout << "deleting node " << node -> getID() << std:: endl;
         // Items for edgeList will be deleted automatically. 
         delete node;
     }
@@ -51,11 +51,13 @@ class Graph {
            adj_list.shrink_to_fit();
        
        }
+
        void createGraph(int num, std::vector<int> graph);
        void printGraph();
        // Every node will know about their neighbours and connecting edges only.
        void distributeGraph();
        // This will create the runnable threads and mark everyone as asleep.
        void runNodes();
+       void wakeOneNodeUp();
 };
 
