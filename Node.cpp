@@ -59,6 +59,17 @@ vector<Item>::iterator  Node::_minimumWeightNode() {
     return result;
 }
 
+Edge * Node::_findEdgeForNode(Node *n) {
+    for (vector<Item>::iterator it = _neighbours.begin();
+            it != _neighbours.end(); it++) {
+        Node *node = (Item(*it))._node;
+        if (n == node) {
+            return (Item (*it))._edge;
+        }
+    }
+    return NULL;
+}
+
 void Node::_processMessage(Message m) {
     // Decode the message.
     // Call the appropriate handler.
@@ -74,12 +85,7 @@ void Node::_processMessage(Message m) {
     }
     else if (m._code == CONNECT) { 
         // Get the argument.
-        stringstream ss;
-        ss.str(m._msg);
-        int level;
-        ss >> level;
-        cout << getID() << " received connect call, param:" << level << endl;
-        _connect(level);
+       _connect(&m);
     }
     else {
         cout << " received invalid request " << endl;
@@ -105,11 +111,31 @@ void Node::_printAndPerculate() {
     }
 }
 
-void Node::_connect(int level) {
+void Node::_connect(Message *m) {
+    stringstream ss;
+    ss.str(m->_msg);
+    int level;
+    ss >> level;
+    cout << getID() << " received connect call, param:" << level << endl;
+    
     // If I am sleeping, I need to wake the fuck up, it's 2014 already.
+    if (_state == SLEEPING) {
+        cout << " Trying to wake up " << getID() << endl;
+        _wakeUp();
+    }
+    Node *sender = m -> sender; 
+    if (level < _levelNumber) {
+        Edge *e = _findEdgeForNode(sender);
+        // Mark this edge as BRANCH
+        e -> setState(BRANCH);
 
+    } else {
+
+
+    }
 
 }
+
 
 void Node::addMessage(Message *msg) {
     unique_lock<mutex> lock(_mq._mutex);
@@ -151,7 +177,7 @@ void Node::_wakeUp() {
     
     // Send connect request to minNode.
     Message *msg = new Message();
-    msg -> createConnectRequest(_levelNumber);
+    msg -> createConnectRequest(_levelNumber, this);
     cout << getID() << ": Sending connect request to " << minNode -> getID() << 
         " Level: " << _levelNumber << endl;
     minNode->addMessage(msg);

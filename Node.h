@@ -55,11 +55,12 @@ class Node {
         // thread.
         void _threadListener();
         std::vector<Item>::iterator _minimumWeightNode();
+        Edge * _findEdgeForNode(Node *n);
         void _printList(std::vector<Item>);
         void _wakeUp();
         void _processMessage(Message m);
         void _printAndPerculate();
-        void _connect(int level);
+        void _connect(Message *m);
     public:
         void addMessage(Message *msg); 
         NodeID _id;

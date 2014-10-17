@@ -13,10 +13,11 @@ Message * Message::createPrintRequest() {
     return this;
 }
 
-Message * Message::createConnectRequest(int level) {
+Message * Message::createConnectRequest(int level, Node *node) {
     _code = CONNECT;
     stringstream ss;
     ss << level;
     _msg= ss.str();
+    sender = node;
     return this;
 }
