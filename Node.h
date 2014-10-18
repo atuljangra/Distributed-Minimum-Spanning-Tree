@@ -51,16 +51,29 @@ class Node {
         std::thread _thread;
         int _levelNumber;
         int _findCount;
+        int _fragmentName;
+        Edge *_inBranch;
+        Edge *_bestEdge;
+        int _bestWeight;
+        Edge *_testEdge; 
+        
         // This will be the main listerner that will handle the execution of
         // thread.
         void _threadListener();
         std::vector<Item>::iterator _minimumWeightNode();
         Edge * _findEdgeForNode(Node *n);
+        Node * _findNodeForEdge(Edge *n);
         void _printList(std::vector<Item>);
         void _wakeUp();
         void _processMessage(Message m);
         void _printAndPerculate();
         void _connect(Message *m);
+        void _initiate(Message *m);
+        void _procedureTest();
+        void _procedureReport();
+        void _report(Message *m);
+        void _test(Message *m);
+
     public:
         void addMessage(Message *msg); 
         NodeID _id;

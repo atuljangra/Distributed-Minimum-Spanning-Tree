@@ -33,8 +33,10 @@ void Node::_threadListener() {
             cout << getID() << " Waiting " << endl;
             _mq._cv.wait(locker);
             // Someone will notify us and then we will check the queue.
-            curMessage = _mq._queue.front();
-            _mq._queue.pop();
+            if (!_mq._queue.empty()) {
+                curMessage = _mq._queue.front();
+                _mq._queue.pop();
+            }
         }
         locker.unlock() ;
         cout << getID() << "starting procedure " << endl;
@@ -70,6 +72,17 @@ Edge * Node::_findEdgeForNode(Node *n) {
     return NULL;
 }
 
+Node* Node::_findNodeForEdge(Edge *e) {
+    for (vector<Item>::iterator it = _neighbours.begin();
+            it != _neighbours.end(); it++) {
+        Edge *edge= (Item(*it))._edge;
+        if (e  == edge) {
+            return (Item (*it))._node;
+        }
+    }
+    return NULL;
+}
+
 void Node::_processMessage(Message m) {
     // Decode the message.
     // Call the appropriate handler.
@@ -84,8 +97,16 @@ void Node::_processMessage(Message m) {
         _printAndPerculate();
     }
     else if (m._code == CONNECT) { 
-        // Get the argument.
-       _connect(&m);
+        _connect(&m);
+    }
+    else if (m._code == INITIATE) {
+        _initiate(&m); 
+    }
+    else if (m._code == TEST) {
+        _test(&m);
+    }
+    else if (m._code == REPORT) {
+        _report(&m);
     }
     else {
         cout << " received invalid request " << endl;
@@ -124,18 +145,124 @@ void Node::_connect(Message *m) {
         _wakeUp();
     }
     Node *sender = m -> sender; 
+    Edge *e = _findEdgeForNode(sender);
     if (level < _levelNumber) {
-        Edge *e = _findEdgeForNode(sender);
         // Mark this edge as BRANCH
-        e -> setState(BRANCH);
+        e -> setState(BRANCH); 
+        // Send initiate request.
+        Message *msg = new Message();
+        msg -> createInitiateRequest(_levelNumber, _fragmentName, _state, this);
+        sender -> addMessage(msg);
+        if (getState() == FIND)
+            _findCount++;
 
-    } else {
+    } else if (e -> getState() == BASIC){
+        // Move message to end of queue.
+        unique_lock<mutex> lock(_mq._mutex);
+        Message front = _mq._queue.front();
+        _mq._queue.pop();
+        _mq._queue.push(front);
+    }
+    else {
+        // Send initiate requests.
+        Message *msg = new Message();
+        cout << getID() << " Sending Initiate to " << sender->getID() 
+            << " param: " << _levelNumber + 1 << " " <<  e -> getWeight() << " " << FIND << endl;
+        msg -> createInitiateRequest(_levelNumber + 1, e -> getWeight(), FIND, this);
+        sender -> addMessage(msg);
+    }
+}
+
+void Node::_initiate(Message *msg) {
+    Node *sender = msg -> sender;
+    stringstream ss;
+    int level, fragName, state;
+    ss.str(msg -> _msg);
+    ss >> level >> fragName >> state;
+    cout << getID() << " received initiate " << sender -> getID() 
+        << " param: " << level << " " << fragName << " " << state  << " " << msg->_msg << endl; 
+    
+    _levelNumber = level;
+    _fragmentName = fragName;
+    _state = state;
+    Edge *e = _findEdgeForNode(sender);
+    _inBranch = e;
+    _bestEdge = NULL;
+    _bestWeight = INT_MAX;
 
 
+     for (vector<Item>::iterator it = _neighbours.begin();
+            it != _neighbours.end(); it++) {
+        Edge *edge = (Item(*it))._edge;
+        if (edge != e && edge -> getState() == BRANCH) {
+            // Send initiate requests.
+            Message *msg = new Message();
+            cout << getID() << " BRANCH Sending Initiate to " << sender->getID() 
+                << " param: " << level << " " <<  fragName << " " << state << endl;
+            msg -> createInitiateRequest(level, fragName, state, this);
+            sender -> addMessage(msg);
+            if (state == FIND) {
+                _findCount++;
+            }
+        }
+     }
+     if (_state == FIND) {
+         cout << getID() << " Executing test" << endl;
+         _procedureTest();
+     }
+}
+
+void Node::_procedureTest() {
+    Edge *minEdge = NULL;
+    Node *minNode = NULL;
+    int minWeight;
+    for (vector<Item>::iterator it = _neighbours.begin();
+            it != _neighbours.end(); it++) {
+        Edge *edge = (Item(*it))._edge;
+        Node *node = (Item(*it))._node;
+        if (edge -> getState() == BASIC && edge -> getWeight() < minWeight) {
+            minEdge = edge;
+            minNode = node;
+            minWeight = edge -> getWeight();
+        }
+    }
+    if (minEdge != NULL && minNode != NULL) {
+        _testEdge = minEdge;
+        // Send test message on edge.
+        Message *msg = new Message();
+        cout << getID() << " Sending Test to " << minNode ->getID() 
+            << " param: " << _levelNumber << " " << _fragmentName <<  endl;
+        msg -> createTestRequest(_levelNumber, _fragmentName, this);
+        minNode -> addMessage(msg);
+    }
+    else {
+        _testEdge = NULL;
+        _procedureReport();
+    }
+       
+
+}
+
+void Node::_procedureReport() {
+    if (_findCount == 0 && _testEdge == NULL) {
+        _state = FOUND;
+        // Send report on the inbranch.
+        Node *rec = _findNodeForEdge(_inBranch);
+        Message *msg = new Message();
+        msg -> createReportRequest(_bestWeight, this);
+        rec -> addMessage(msg);
     }
 
 }
 
+void Node::_test(Message *m) {
+
+}
+
+void Node::_report(Message *m) {
+
+
+}
 
 void Node::addMessage(Message *msg) {
     unique_lock<mutex> lock(_mq._mutex);

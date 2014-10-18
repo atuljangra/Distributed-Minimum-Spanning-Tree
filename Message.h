@@ -6,6 +6,10 @@
 #define PRINT -1
 #define WAKEUP 0
 #define CONNECT 1
+#define INITIATE 2
+#define TEST 3
+#define REPORT 4
+
 class Node;
 class Message {
     public:
@@ -36,9 +40,12 @@ class Message {
          * Message creaters.
          * Modify already instantiated Message.
         */
-         Message * createWakeUpMessage();
-         Message * createPrintRequest();
-         Message * createConnectRequest(int level, Node *node);
+        void createWakeUpMessage();
+        void createPrintRequest();
+        void createConnectRequest(int level, Node *node);
+        void createInitiateRequest(int level, int fragmentName, int state, Node *n);
+        void createTestRequest(int level, int fragName, Node *n);
+        void createReportRequest(int bestEdge, Node *n);
 };
 
 #endif
