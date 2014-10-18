@@ -46,14 +46,14 @@ int main (void) {
     
     // Wake one node up.
     g -> wakeOneNodeUp();
-    delete g; 
     // Sleep for a while maybe?
     chrono::milliseconds duration(2000);
 //    this_thread::sleep_for(duration);
-    /*Prims *p = new Prims(graph);
+    Prims *p = new Prims(graph);
     p -> findMst();
     p -> printMst(); 
-    */
+    
+    delete g;
     return 0;
 }
 
