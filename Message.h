@@ -11,6 +11,7 @@
 #define REPORT 4
 #define ACCEPT 5
 #define REJECT 6
+#define CHANGECORE 7
 
 class Node;
 class Message {
@@ -50,6 +51,7 @@ class Message {
         void createAcceptRequest(Node *n);
         void createReportRequest(int bestEdge, Node *n);
         void createRejectRequest(Node *n);
+        void createChangeCoreRequest(Node *n);
 };
 
 #endif

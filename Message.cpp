@@ -52,3 +52,8 @@ void Message::createRejectRequest(Node *n) {
     _code = REJECT;
     sender = n;
 }
+
+void Message::createChangeCoreRequest(Node *n) {
+    _code = CHANGECORE;
+    sender = n;
+}

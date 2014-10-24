@@ -114,6 +114,9 @@ void Node::_processMessage(Message m) {
     else if (m._code == REJECT) {
         _reject(&m);
     }
+    else if (m._code == CHANGECORE) {
+        _changeCore(&m);
+    }
     else {
         cout << " received invalid request " << endl;
     }
@@ -309,11 +312,61 @@ void Node::_test(Message *m) {
     }
 }
 
-void Node::_report(Message *m) {
-    cout << "EXECUTING REPORT " << endl;
+void Node::_report(Message *msg) {
+    Node *sender = msg -> sender;
+    Edge *e = _findEdgeForNode(sender);
+    stringstream ss;
+    int weight;
+    ss.str(msg -> _msg);
+    ss >> weight;
+    cout << getID() << " received report request " << sender -> getID() << 
+        " param " << weight << " " << msg -> _msg << endl;
 
+    if (e != _inBranch) {
+        _findCount--;
+        if (weight < _bestWeight) {
+            _bestWeight = weight;
+            _bestEdge = e;
+        }
+        _procedureReport();
+    }
+    else if (_state == FIND) {
+        // Move message to end of queue.
+        unique_lock<mutex> lock(_mq._mutex);
+        Message front = _mq._queue.front();
+        _mq._queue.pop();
+        _mq._queue.push(front);       
+    } 
+    else if (weight > _bestWeight) {
+        _procedureChangeCore();
+    }
+    else if (weight == _bestWeight && weight == INT_MAX) {
+        cout << "FUCK" << endl;
+        cout << "FUUUUUUUUUUUUUUCCCCCCCCCCCCCKKKKKKKKKKK" << endl;
+// TODO add a better termination condition.
+    }
 }
 
+void Node::_procedureChangeCore() {
+    Node *node = _findNodeForEdge(_bestEdge);
+    if (_bestEdge -> getState() == BRANCH) {
+        // Send change core on bestEdge
+        Message *msg = new Message();
+        msg -> createChangeCoreRequest(this);
+        node -> addMessage(msg);
+    } 
+    else {
+        // Send connect on best edge;
+        Message *connectMsg = new Message();
+        connectMsg -> createConnectRequest(_levelNumber, this);
+        node -> addMessage(connectMsg);
+        _bestEdge -> setState(BRANCH);
+    }
+}
+
+void Node::_changeCore(Message *msg) {
+    _procedureChangeCore();
+}
 void Node::_accept(Message *msg) {
     Node *sender = msg -> sender;
     _testEdge = NULL;

@@ -75,6 +75,8 @@ class Node {
         void _test(Message *m);
         void _accept(Message *m);
         void _reject(Message *m);
+        void _procedureChangeCore();
+        void _changeCore(Message *m);
 
     public:
         void addMessage(Message *msg); 
