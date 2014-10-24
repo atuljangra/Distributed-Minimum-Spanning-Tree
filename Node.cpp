@@ -194,13 +194,15 @@ void Node::_initiate(Message *msg) {
      for (vector<Item>::iterator it = _neighbours.begin();
             it != _neighbours.end(); it++) {
         Edge *edge = (Item(*it))._edge;
-        if (edge != e && edge -> getState() == BRANCH) {
+        Node *node = _findNodeForEdge(edge);
+        cout << "Node is " << node->getID() << endl;
+        if (node != sender && edge -> getState() == BRANCH) {
             // Send initiate requests.
             Message *msg = new Message();
             cout << getID() << " BRANCH Sending Initiate to " << sender->getID() 
                 << " param: " << level << " " <<  fragName << " " << state << endl;
             msg -> createInitiateRequest(level, fragName, state, this);
-            sender -> addMessage(msg);
+            node -> addMessage(msg);
             if (state == FIND) {
                 _findCount++;
             }
@@ -256,11 +258,11 @@ void Node::_procedureReport() {
 }
 
 void Node::_test(Message *m) {
-
+    cout << "EXECUTING TEST" << endl;
 }
 
 void Node::_report(Message *m) {
-
+    cout << "EXECUTING REPORT " << endl;
 
 }
 
