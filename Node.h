@@ -73,6 +73,8 @@ class Node {
         void _procedureReport();
         void _report(Message *m);
         void _test(Message *m);
+        void _accept(Message *m);
+        void _reject(Message *m);
 
     public:
         void addMessage(Message *msg); 

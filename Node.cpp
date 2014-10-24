@@ -108,6 +108,12 @@ void Node::_processMessage(Message m) {
     else if (m._code == REPORT) {
         _report(&m);
     }
+    else if (m._code == ACCEPT) {
+        _accept(&m);
+    }
+    else if (m._code == REJECT) {
+        _reject(&m);
+    }
     else {
         cout << " received invalid request " << endl;
     }
@@ -306,6 +312,26 @@ void Node::_test(Message *m) {
 void Node::_report(Message *m) {
     cout << "EXECUTING REPORT " << endl;
 
+}
+
+void Node::_accept(Message *msg) {
+    Node *sender = msg -> sender;
+    _testEdge = NULL;
+    Edge *e = _findEdgeForNode(sender);
+    if (e -> getWeight() < _bestWeight) {
+        _bestWeight = e -> getWeight();
+        _bestEdge = e;
+    }
+    _procedureReport();
+}
+
+void Node::_reject(Message *msg) {
+    Node *sender = msg -> sender;
+    Edge *e = _findEdgeForNode(sender);
+    if (e -> getState() == BASIC) {
+        e -> setState(REJECTED);
+    }
+    _procedureTest();
 }
 
 void Node::addMessage(Message *msg) {
