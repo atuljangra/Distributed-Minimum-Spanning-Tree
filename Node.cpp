@@ -258,7 +258,49 @@ void Node::_procedureReport() {
 }
 
 void Node::_test(Message *m) {
-    cout << "EXECUTING TEST" << endl;
+    stringstream ss;
+    ss.str(m -> _msg);
+    int level, fragName;
+    ss >> level >> fragName;
+    Node *sender = m -> sender;
+    cout << getID() << " recieved test " << sender -> getID() << " param: " 
+        << level << " " << fragName << " " << m -> _msg << endl;
+
+    // If I am sleeping, I need to wake the fuck up, it's 2014 already.
+    if (_state == SLEEPING) {
+        cout << " Trying to wake up " << getID() << endl;
+        _wakeUp();
+    }
+    if (_levelNumber < level) {
+        // Move message to end of queue.
+        unique_lock<mutex> lock(_mq._mutex);
+        Message front = _mq._queue.front();
+        _mq._queue.pop();
+        _mq._queue.push(front);
+    } else if (fragName != _fragmentName) {
+        // Send accept.
+        cout << getID() << " sending accept to " << sender -> getID() << endl;
+        Message *msg = new Message();
+        msg -> createAcceptRequest(this);
+        sender -> addMessage(msg);
+
+    } else {
+        Edge *edge = _findEdgeForNode(sender);
+        if (edge -> getState() == BASIC) {
+            edge -> setState(REJECTED);
+        }
+        if (_testEdge != edge) {
+            // Sending reject on this edge;
+            cout << getID() << "sending reject to " << sender -> getID() << endl;
+            Message *rejectMsg = new Message();
+            rejectMsg -> createRejectRequest(this);
+            sender -> addMessage(rejectMsg);
+        } else {
+            cout << getID() << " _test: Executing test" << endl; 
+            _procedureTest();
+        }
+
+    }
 }
 
 void Node::_report(Message *m) {

@@ -35,10 +35,20 @@ void Message::createTestRequest(int level, int fragName, Node *n) {
     sender = n;
 }
 
+void Message::createAcceptRequest(Node *n) {
+    _code = ACCEPT;
+    sender = n;
+}
+
 void Message::createReportRequest(int bestWt, Node *n) {
     _code = REPORT;
     stringstream ss;
     ss << bestWt;
     _msg = ss.str();
+    sender = n;
+}
+
+void Message::createRejectRequest(Node *n) {
+    _code = REJECT;
     sender = n;
 }

@@ -9,6 +9,8 @@
 #define INITIATE 2
 #define TEST 3
 #define REPORT 4
+#define ACCEPT 5
+#define REJECT 6
 
 class Node;
 class Message {
@@ -45,7 +47,9 @@ class Message {
         void createConnectRequest(int level, Node *node);
         void createInitiateRequest(int level, int fragmentName, int state, Node *n);
         void createTestRequest(int level, int fragName, Node *n);
+        void createAcceptRequest(Node *n);
         void createReportRequest(int bestEdge, Node *n);
+        void createRejectRequest(Node *n);
 };
 
 #endif
